@@ -1,0 +1,40 @@
+# bumper\__main__.py: 7
+# bumper\admin\controllers.py: 2
+# bumper\api\controllers.py: 1
+# bumper\app.py: 2
+# bumper\auth\controllers.py: 1
+# bumper\auth\middleware.py: 2
+Flask == 1.1.1
+
+# bumper\api\controllers.py: 4
+Flask-API == 2.0
+
+# bumper\extensions.py: 1
+Flask-PyMongo == 2.3.0
+
+# bumper\extensions.py: 2
+Flask-Session == 0.3.1
+
+# bumper\bumper.py: 7
+beautifulsoup4 == 4.8.0
+
+# bumper\bumper.py: 6
+cloudscraper == 1.2.20
+
+# bumper\extensions.py: 3
+flask-bcrypt == 0.7.1
+
+# bumper\auth\forms.py: 1
+flask-wtf == 0.14.2
+
+# bumper\bumper.py: 5,9
+requests == 2.22.0
+
+# setup.py: 3
+setuptools == 40.8.0
+
+# bumper\__main__.py: 8
+waitress == 1.4.2
+
+# bumper\auth\forms.py: 3
+wtforms == 2.2.1

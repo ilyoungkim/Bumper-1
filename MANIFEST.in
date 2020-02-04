@@ -1,0 +1,3 @@
+graft bumper/static
+graft bumper/templates
+global-exclude *.pyc

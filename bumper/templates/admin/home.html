@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class='container'>
+	<div class='columns'>
+		<div class='column is-one-quarter'>
+			<aside class='menu'>
+				<p class='menu-label'>General</p>
+				<ul class='menu-list'>
+					<li><a onclick='open_tab(event, "home")' class='is-active'>Home</a></li>
+					<li><a class='has-text-danger' href='{{ url_for("auth.logout") }}'>Logout</a></li>
+				</ul>
+				<p class='menu-label'>Configuration</p>
+				<ul class='menu-list'>
+					<li><a onclick='open_tab(event, "config")'>Defaults</a></li>
+					<li><a onclick='open_tab(event, "threads")'>Threads</a></li>
+				</ul>
+				<p class='menu-label'>Program</p>
+				<ul class='menu-list'>
+					<li><a onclick='open_tab(event, "user")'>User</a></li>
+					<li><a onclick='open_tab(event, "stats")'>Statistics</a></li>
+				</ul>
+			</aside>
+		</div>
+		<div class='column is-three-quarters content-tab home'>
+			<div class='box'>
+				<h1 class='title'>Home</h1>
+				<hr>
+				<p>Welcome to the program website, <strong><span class='name'>{{ user['name'] }}</span></strong>. Here you can configure your program, view statistics on many different metrics, and control the status of your bumper from the click of a button.</p>
+			</div>
+		</div>
+		<div class='column is-three-quarters content-tab config' style='display: none'>
+			<div class='box'>
+				<h1 class='title'>Defaults</h1>
+				<hr>
+				<form action='{{ url_for("api.config") }}' method='post' onsubmit='return false;'>
+					<div class='field'>
+						<div class='label'>
+							<label class='label'>Bump Delay</label>
+						</div>
+						<div class='field-body'>
+							<div class='field'>
+								<p class='control'>
+									<input class='input' type='text' name='bump_delay' value='{{ config.bump_delay }}' placeholder='Time in minutes between bumps...'>
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class='field'>
+						<div class='label'>
+							<label class='label'>Post Delay</label>
+						</div>
+						<div class='field-body'>
+							<div class='field'>
+								<p class='control'>
+									<input class='input' type='text' name='post_delay' value='{{ config.post_delay }}' placeholder='Time in seconds between posts...'>
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class='field'>
+						<div class='label'>
+							<label class='label'>Default Message</label>
+						</div>
+						<div class='field-body'>
+							<div class='field'>
+								<p class='control'>
+									<textarea class='textarea' name='default_message' placeholder='Default message for replies...'>{{ config.default_message }}</textarea>
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class='field'>
+						<div class="control">
+							<button onclick='save_defaults()' class="button is-link">Save</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class='column is-three-quarters content-tab threads' style='display: none'>
+			<div class='box'>
+				<h1 class='title'>Threads</h1>
+				<hr>
+				<form action='{{ url_for("api.thread") }}' method='POST' onsubmit='return false;'>
+					<input type='hidden' name='method' value='edit'>
+					<div class='field'>
+						<div class='select is-multiple is-fullwidth'>
+							<select name='thread' multiple size='{{ threads|length }}'>
+								{% for thread in config.threads %}
+								<option class='thread-{{ loop.index }}' value='{{ thread.id }}'>{{ thread.name if thread.name is defined else thread.id }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					{% for thread in config.threads %}
+					<div class='thread-{{ loop.index }}' style='display: none'>
+						<hr>
+						<div class='field'>
+							<p class='control'>
+								<input class='input' name='thread' disabled value='{{ thread.id }}'>
+							</p>
+						</div>
+						<div class='field'>
+							<p class='control'>
+								<input class='input' type='text' name='name' placeholder='A name for this thread...' value='{{ thread.name }}'>
+							</p>
+						</div>
+						<div class='field'>
+							<p class='control'>
+								<textarea class='textarea' name='message' placeholder='Thread specific message...'>{% if thread.message is defined %}{{ thread.message }}{% endif %}</textarea>
+							</p>
+						</div>
+						<div class='field'>
+							<div class="control">
+								<button onclick='save_thread();' class="button is-link">Save</button>
+							</div>
+						</div>
+					</div>
+					{% endfor %}
+					<hr>
+				</form>
+				<div class='field'>
+					<div class="control">
+						<button onclick='change_info()' class="button is-link">Edit</button>
+						<button onclick='delete_thread()' class="button is-danger">Delete</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class='column is-three-quarters content-tab stats' style='display: none'>
+			<div class='box'>
+				<h1 class='title'>Statistics</h1>
+				<hr>
+				<table class='table'>
+					<thead>
+						<tr>
+							<th>Key</th>
+							<th>Value</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Start Time</td>
+							<td>{{ data['start'] }}</td>
+						</tr>
+						<tr>
+							<td>Uptime</td>
+							<td>{{ elapsed }}</td>
+						</tr>
+						<tr>
+							<td>Most Recent Bump</td>
+							<td>{{ data['last_bump'] }}</td>
+						</tr>
+						<tr>
+							<td>Total Posts</td>
+							<td>{{ data['totals']['posts'] }}</td>
+						</tr>
+						<tr>
+							<td>Total Bumps</td>
+							<td>{{ data['totals']['bumps'] }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class='column is-three-quarters content-tab user' style='display: none'>
+			<div class='box'>
+				<h1 class='title'>User</h1>
+				<hr>
+				<form action='{{ url_for("api.user") }}' method='post'>
+					<div class='field'>
+						<div class='label'>
+							<label class='label'>Username</label>
+						</div>
+						<div class='field-body'>
+							<div class='field'>
+								<p class='control'>
+									<input class='input' type='text' name='bump_delay' value='{{ username }}' placeholder='Username...'>
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class='field'>
+						<div class='label'>
+							<label class='label'>New Password</label>
+						</div>
+						<div class='field-body'>
+							<div class='field'>
+								<p class='control'>
+									<input class='input' type='password' name='new-password' placeholder='New Password...'>
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class='field'>
+						<div class='label'>
+							<label class='label'>Confirm Password</label>
+						</div>
+						<div class='field-body'>
+							<div class='field'>
+								<p class='control'>
+									<input class='input' type='password' name='old-password' placeholder='Current Password...'>
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class='field'>
+						<div class="control">
+							<button class="button is-link">Save</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script src='{{ url_for("static", filename="js/index.js") }}'></script>
+{% endblock %}
+</body>
+</html>

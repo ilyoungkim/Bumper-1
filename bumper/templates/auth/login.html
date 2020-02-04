@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class='container'>
+	<form action='' method='post'>
+		{{ form.csrf_token }}
+		<div class='field'>
+			{{ form.username.label(class='label') }}
+			<div class='control'>
+				{{ form.username(class='input') }}
+			</div>
+		</div>
+		<div class='field'>
+			{{ form.password.label(class='label') }}
+			<div class='control'>
+				{{ form.password(class='input') }}
+			</div>
+		</div>
+		<div class='field'>
+			<div class='control'>
+				<button class='button is-link'>{{ mode|capitalize }}</button>
+			</div>
+		</div>
+	</form>
+</div>
+{% endblock %}

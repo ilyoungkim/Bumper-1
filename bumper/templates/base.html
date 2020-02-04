@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+	<!-- HTML -->
+	<title>OGBump</title>
+	<link rel='shortcut icon' href="{{ url_for('static', filename='files/icon.png') }}">
+
+	<!-- Meta -->
+	<meta charset='UTF-8'>
+	<meta name='author' content='Shoot'>
+	<meta name='description' content='Web based autobumper with a Python backend'>
+	<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+
+	<!-- Fonts -->
+	<link href='https://fonts.googleapis.com/css?family=Montserrat&display=swap' rel='stylesheet'>
+
+	<!-- CSS -->
+	<link rel='stylesheet' href='{{ url_for("static", filename="css/style.css") }}'>
+	<link rel='stylesheet' href='{{ url_for("static", filename="css/bulma.css") }}'>
+</head>
+<body>
+<div id="snackbar"></div>
+<section class='hero'>
+	<div class='hero-body'>
+		<div class='container'>
+			<h1 class='title'>Auto</h1>
+			<h2 class='subtitle'>by Shoot</h2>
+		</div>
+	</div>
+</section>
+<section class='txt-content'>{% block content %}{% endblock %}</section>
+<footer class='footer'>
+	<div class='content has-text-centered'>
+		<p><strong>Auto</strong> by @<a href='https://github.com/Shoot'>Shoot</a> 2020.</p>
+	</div>
+</footer>
+</body>
+</html>
