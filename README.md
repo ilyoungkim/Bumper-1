@@ -95,6 +95,7 @@ Parameters:
 |bump_delay|Float|No|Time to wait between bumps|
 |post_delay|Float|No|Time to wait between posts|
 |default_message|String|No|Default message for threads|
+
 ##### /thread
 Modify threads within the configuration.
 Methods: POST
@@ -106,6 +107,7 @@ Parameters:
 |thread|String|Yes|The thread user wants to edit|
 |name|String|No|An alias/note for the thread|
 |message|String|No|The default message for that specific thread|
+
 ##### /user
 Change the information of the admin account.
 Methods: POST
@@ -116,6 +118,7 @@ Parameters:
 |old-password|String|Yes|Current admin account password|
 |new-password|String|No|New password for the admin account|
 |username|String|No|New username for the account|
+
 ##### /last_request
 Shows the latest request made by the program as a web page.
 Methods: GET
@@ -132,6 +135,7 @@ Parameters:
 |-|-|-|-|
 |username|String|Yes|Username to log in as|
 |password|String|Yes|Password to log in with|
+
 On successful login, user will be redirected to the admin panel (`/admin/`). On failure, they will stay on the page.
 ##### /logout
 Log out of the website
@@ -147,6 +151,7 @@ Parameters:
 |-|-|-|-|
 |username|String|Yes|Username to use|
 |password|String|Yes|Password to use|
+
 On successful signup user will be redirected to the admin panel (`/admin/`).
 
 ## Todo
