@@ -29,7 +29,7 @@ setup(
 		'flask-wtf==0.14.2',
 		'requests==2.22.0',
 		'setuptools==40.8.0',
-		'waitress==1.4.2',
+		'waitress>=1.4.3',
 		'wtforms==2.2.1'
 	],
 	entry_points={

@@ -34,7 +34,7 @@ requests == 2.22.0
 setuptools == 40.8.0
 
 # bumper\__main__.py: 8
-waitress == 1.4.2
+waitress >= 1.4.3
 
 # bumper\auth\forms.py: 3
 wtforms == 2.2.1
