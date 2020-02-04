@@ -208,7 +208,7 @@ class Bumper:
 				else:
 					message = 'This thread is being auto bumped'
 
-				#self.post(thread['id'], message)
+				self.post(thread['id'], message)
 
 				self.logger.info('Bumped thread ' + thread['id'])
 				self.data.totals['posts'] += 1
