@@ -6,7 +6,7 @@ Remade version of my forum auto bumper with cleaner code and an in-built web ser
 - An account on [OGUsers](https://ogusers.com)
 - A 2Captcha subscription (just incase)
 - MongoDB server (if the `--server` option is chosen)
-- 
+
 ### Installing
 ```
 pip install git+git://github.com/Shoot/Bumper.git
@@ -89,6 +89,7 @@ All methods will return a `200` status code on success and `400` on failure.
 Change basic configuration for the program.
 Methods: POST
 Parameters:
+
 |Name|Type|Required|Description|
 |-|-|-|-|
 |bump_delay|Float|No|Time to wait between bumps|
@@ -98,6 +99,7 @@ Parameters:
 Modify threads within the configuration.
 Methods: POST
 Parameters:
+
 |Name|Type|Required|Description|
 |-|-|-|-|
 |method|String|Yes|What method to do for the thread, `edit`, `create`, or `delete`|
@@ -108,6 +110,7 @@ Parameters:
 Change the information of the admin account.
 Methods: POST
 Parameters:
+
 |Name|Type|Required|Description|
 |-|-|-|-|
 |old-password|String|Yes|Current admin account password|
@@ -124,6 +127,7 @@ Authentication system for the website to prevent just anyone from being able to 
 Log in to the website
 Methods: GET/POST
 Parameters:
+
 |Name|Type|Required|Description|
 |-|-|-|-|
 |username|String|Yes|Username to log in as|
@@ -138,6 +142,7 @@ If the user is logged in they will be redirected to the login page (`/auth/login
 Signs the user up for an administrator account if there is not already one.
 Methods: GET/POST
 Parameters:
+
 |Name|Type|Required|Description|
 |-|-|-|-|
 |username|String|Yes|Username to use|
