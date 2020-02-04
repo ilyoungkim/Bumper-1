@@ -53,11 +53,11 @@ For now, before installing, go into `/bumper/config.py` and change the value of 
 ### Running
 To sign in with username and password
 ```
-ogbump -u <username> -p <password>
+bumper -u <username> -p <password>
 ```
 Or with an `ogusersbbuser` cookie:
 ```
-ogbump -c <cookie>
+bumper -c <cookie>
 ```
 The latter option (in my experience) cuts down on the amount of CAPTCHAs encountered.  
 Additional options are available below.
@@ -71,7 +71,7 @@ Additional options are available below.
 | -config | ✗ | config.json | The file name of the config |
 | --server | ✗ | False | Run the web server alongside |
 
-All options are available by typing `ogbump -h`.
+All options are available by typing `bumper -h`.
 
 ### Website
 Using the `--server` parameter when starting the program, a website will be started on `localhost:80` that can be used in order to change the configuration and view statistics as the program is running. There are three different paths of pages that are hosted.
