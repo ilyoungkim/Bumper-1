@@ -261,7 +261,7 @@ class Bumper:
 		resp = self._request('GET', 'member.php', params={
 			'action': 'logout'
 		})
-		soup = BeautifulSoup(resp.text)
+		soup = BeautifulSoup(resp.text, 'html.parser')
 
 		self._request('POST', 'member.php', params={
 			'action': 'logout',
@@ -368,7 +368,7 @@ class Bumper:
 				else:
 					message = 'This thread is being auto bumped'
 
-				self.post(thread['id'], message)
+				self.reply(thread['id'], message)
 
 				self.logger.info('Bumped ' + (thread['name'] if thread.get('name') is not None else thread['id']))
 

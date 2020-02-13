@@ -52,7 +52,6 @@ def setup():
 				raise Exception('Invalid session file, please delete it and log in again')
 		else:
 			raise Exception('Login information was not given')
-
 	else:
 		if not args.cookie:
 			bumper = Bumper(args.username, args.password, twofac=args.tfa)

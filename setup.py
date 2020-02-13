@@ -9,7 +9,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
 	name='bumper',
-	version='1.1.0',
+	version='1.1.1',
 	description='Automatic poster for OGUsers',
 	author='Shoot',
 	long_description=long_description,

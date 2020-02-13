@@ -4,12 +4,13 @@ from flask import Flask
 from .admin.controllers import admin
 from .api.controllers import api
 from .auth.controllers import auth
+from .home.controllers import home
 
 from .config import DevelopmentConfig, ProductionConfig
 from .extensions import session, mongo, bcrypt
 
 def create_app():
-	app = Flask(__name__, static_url_path='/static')
+	app = Flask(__name__, static_url_path='/static', template_folder='templates')
 
 	load_configurations(app)
 	initialise_extensions(app)
@@ -29,3 +30,4 @@ def register_blueprints(app):
 	app.register_blueprint(admin)
 	app.register_blueprint(api)
 	app.register_blueprint(auth)
+	app.register_blueprint(home)
