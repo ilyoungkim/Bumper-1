@@ -1,4 +1,5 @@
 # Bumper
+![The web page](https://i.imgur.com/shd4E2B.png)
 Remade version of my forum auto bumper with cleaner code and an in-built web server to edit the threads bumped, view statistics, and configure the program remotely, without having to restart.
 
 ## Getting Started

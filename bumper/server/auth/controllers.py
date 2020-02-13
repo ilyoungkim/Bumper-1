@@ -10,6 +10,10 @@ auth = Blueprint('auth', __name__, url_prefix='/auth')
 def login():
 	if mongo.db.admin.find() == 0:
 		return redirect(url_for('auth.register'))
+
+	if session.get('uid'):
+		return redirect(url_for('admin.index'))
+	
 	form = LoginForm()
 	if form.validate_on_submit():
 		user = mongo.db.admin.find_one({'username': form.username.data})

@@ -41,6 +41,39 @@ function save_defaults()
 	xhr.send(data);
 }
 
+function save_user()
+{
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function()
+	{
+		if (this.readyState == 4)
+		{
+			data = JSON.parse(this.responseText);
+			if (this.status == 200)
+			{
+				show_snackbar('Successfully updated the user');
+			}
+			else if (this.status == 400)
+			{
+				show_snackbar(data['error']);
+			}
+			else
+			{
+				show_snackbar("Couldn't update the user");
+				console.error(this.responseText);
+			}
+		}
+	}
+
+	var data = new FormData();
+	data.append('username', document.querySelector('input[name=username]').value);
+	data.append('old-password', document.querySelector('input[name=old-password]').value);
+	data.append('new-password', document.querySelector('input[name=new-password]').value);
+
+	xhr.open('POST', '/api/user', true);
+	xhr.send(data);
+}
+
 function save_thread()
 {
 	var sel = document.querySelector("select[name=thread]");

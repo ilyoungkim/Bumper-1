@@ -167,7 +167,7 @@
 			<div class='box'>
 				<h1 class='title'>User</h1>
 				<hr>
-				<form action='{{ url_for("api.user") }}' method='post'>
+				<form action='{{ url_for("api.user") }}' method='post' onsubmit='return false;'>
 					<div class='field'>
 						<div class='label'>
 							<label class='label'>Username</label>
@@ -175,7 +175,7 @@
 						<div class='field-body'>
 							<div class='field'>
 								<p class='control'>
-									<input class='input' type='text' name='bump_delay' value='{{ username }}' placeholder='Username...'>
+									<input class='input' type='text' name='username' value='{{ username }}' placeholder='Username...'>
 								</p>
 							</div>
 						</div>
@@ -206,7 +206,7 @@
 					</div>
 					<div class='field'>
 						<div class="control">
-							<button class="button is-link">Save</button>
+							<button onclick='save_user()' class="button is-link">Save</button>
 						</div>
 					</div>
 				</form>
