@@ -141,7 +141,7 @@ function open_tab(evt, tabName)
 		return;
 	}
 
-	window.document.title = 'OGBump :: ' + tabName.replace(/^\w/, c => c.toUpperCase());
+	window.document.title = 'Bumper :: ' + tabName.replace(/^\w/, c => c.toUpperCase());
 
 	var content_tabs = document.getElementsByClassName('content-tab');
 	var buttons = document.querySelectorAll('li > a');

@@ -1,0 +1,19 @@
+{
+    "bump_delay": 62,
+    "post_delay": 60,
+    "default_message": "I haven't set a message for this thread",
+    "threads": [
+        {
+            "name": "My Thread",
+            "id": "123456",
+            "message": "Bumping this thread"
+        },
+        {
+            "name": "My Other Thread",
+            "id": "654321",
+            "message": "This is another thread"
+        }
+    ],
+    "host": "127.0.0.1",
+    "port": 80
+}

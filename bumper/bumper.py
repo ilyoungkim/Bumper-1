@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 from requests.exceptions import *
 
+from .constants import *
 from .exceptions import *
 
 class Data:
@@ -30,47 +31,120 @@ class Data:
 
 class Bumper:
 	def __init__(self, username, password, twofac=None, cookie=None):
-		self.data = Data()
+		"""
+		The bumper object itself. If username/password are left empty
+		but a cookie is provided, it will log in with that instead.
+
+		Within this __init__ function the logger and cloudflare scraper
+		will be started, and the program will check if the login details
+		are correct or not.
+
+		:param username: OGU account name
+		:param password: OGU password
+		:param twofac: current 2FA code
+		:param cookie: `ogusersbbuser` cookie
+
+		:return: none
+		"""
 		self.logger = logging.getLogger(__name__)
 
-		self.logger.debug('Initializing the CloudScraper session')
-		self.session = cloudscraper.CloudScraper(browser={'browser': 'chrome','desktop': True})
+		self.data = Data()
+		self.__config = None
+
+		self.session = cloudscraper.CloudScraper(
+			browser={
+				'browser': 'chrome',
+				'desktop': True
+			}
+		)
 
 		if cookie:
-			self.logger.debug('Loading session from cookie')
 			self.session.cookies['ogusersmybbuser'] = cookie
-
 			if not self.logged_in:
 				raise InvalidUser('Incorrect login details')
 		else:
-			self.logger.debug('Loading session from username/password')
 			if not self.login(username, password, twofac=twofac):
 				raise InvalidUser('Incorrect login details')
 
-		self.logger.debug('Getting information on the current user')
-		self.user = self.current_user()
+		self.logger.info('Initialized the bumper successfully')
+
+	def _validate_config(cls, config):
+		"""
+		Validate a config dictionary/JSON string, if it is not valid
+		then an error will be raised
+
+		:param config: the data to use/validate
+
+		:return: the validated config
+		"""
+		if not isinstance(config, dict):
+			try:
+				config = json.loads(config)
+			except ValueError:
+				raise InvalidJSON("Configuration is not valid JSON")
+
+		for item in REQUIRED_VALUES:
+			if not config.get(item):
+				self.logger.warning(f"Missing `{item}` in the config file, using default value")
+				config[item] = DEFAULT_CONFIG[item]
+			
+			try:
+				x = float(config[item])
+			except ValueError:
+				raise InvalidType(item + " is not of the correct type (should be integer/float)")
+
+		if len(config.get('threads', [])) == 0:
+			raise MissingData("No threads provided")
+
+		for index, thread in enumerate(config['threads'], start=1):
+			for item in REQUIRED_VALUES_THREAD:
+				if not thread.get(item):
+					raise MissingData("Missing data in thread " + str(index))
+
+		return config
 
 	@property
-	def logged_in(self):
-		resp = self._request('GET', 'member.php', params={'action': 'profile'})
-		soup = BeautifulSoup(resp.text, 'html.parser')
+	def config(self):
+		"""
+		Get the current config
 
-		return resp.status_code == 200
+		:return: dict
+		"""
+		return self.__config
 
-	def current_user(self):
-		resp = self._request('GET', 'member.php', params={'action': 'profile'})
-		soup = BeautifulSoup(resp.text, 'html.parser')
+	@config.setter
+	def config(self, data):
+		"""
+		Load a new config and validate it
 
-		return {
-			'name': soup.find('title').get_text().split(' |')[0],
-			'uid': soup.find('a', {'id': 'profileLink'}).get_text(),
-			'avatar': soup.find('div', {'class': 'profile_avatar'}).find('img').get('src'),
-			'credits': soup.find_all('a', {'href': 'https://ogusers.com/credits.php'})[1].get_text(),
-			'reputation': soup.find('strong', {'class': 'reputation_positive'}).get_text(),
-			'vouches': soup.find('strong', {'class': 'reputation_neutral'}).get_text()
-		}
+		:param data: dictionary/JSON string to load data from
+
+		:return: none
+		"""
+		self.__config = self._validate_config(data)
+
+	def save_config(self, file, **kwargs):
+		"""
+		Save a config to a file
+
+		:param file: the file object to write to
+		:kwargs: any other data to load to the JSON dump function
+
+		:return: none
+		"""
+		json.dump(self.__config, file, **kwargs)
 
 	def _request(self, method, url, **kwargs):
+		"""
+		Make a request to a specified resource. If the request fails, it retries continually,
+		waiting for longer amounts of time after each failure, stopping at 256 seconds.
+
+		:param method: the method to request the resource with (eg GET/POST)
+		:param url: the resource to request (eg 'member.php')
+		:param **kwargs anything else to pass to the request
+
+		:return: response object
+		"""
 		wait = 4
 		while 1:
 			try:
@@ -90,60 +164,130 @@ class Bumper:
 		return resp
 
 	def _get_input(self, data, target):
+		"""
+		Get the value of a specific input
+
+		:param data: BeautifulSoup object to search through
+		:param target: the value of the 'name' tag to search for
+
+		:return: string
+		"""
 		return data.find('input', {'name': target}).get('value')
 
-	def _resolve_thread(self, thread):
-		self.logger.debug('Attempting to resolve thread URL "' + thread + '"')
+	@property
+	def logged_in(self):
+		"""
+		Check whether or not the user is logged in
+
+		:return: bool
+		"""
+		resp = self._request('GET', 'member.php', params={
+			'action': 'profile'
+		})
+		soup = BeautifulSoup(resp.text, 'html.parser')
+
+		return resp.status_code == 200
+
+	@property
+	def current_user(self):
+		"""
+		Get data on the current user
+
+		:return: dict
+		"""
+		resp = self._request('GET', 'member.php', params={
+			'action': 'profile'
+		})
+		soup = BeautifulSoup(resp.text, 'html.parser')
+
+		return {
+			'name': soup.find('title').get_text().split(' |')[0],
+			'uid': soup.find('a', {'id': 'profileLink'}).get_text(),
+			'avatar': soup.find('div', {'class': 'profile_avatar'}).find('img').get('src'),
+			'credits': soup.find_all('a', {'href': 'https://ogusers.com/credits.php'})[1].get_text(),
+			'reputation': soup.find('strong', {'class': 'reputation_positive'}).get_text(),
+			'vouches': soup.find('strong', {'class': 'reputation_neutral'}).get_text()
+		}
+
+	def resolve_thread(self, thread):
+		"""
+		Attempt to find a thread's ID from a URL or partial URL
+
+		:param thread: a string with a possible thread
+
+		:return: string
+		"""
 		resp = self._request('GET', thread.split('ogusers.com/')[-1])
 		soup = BeautifulSoup(resp.text, 'html.parser')
 
 		reply_button = soup.find('div', {'class': 'newrepliesbutton'})
 
-		if reply_button:
-			tid = reply_button.find('a').get('href').split('?tid=')[-1]
-			self.logger.debug('Thread exists: ' + tid)
-			return tid
-		else:
+		if not reply_button:
 			raise InvalidThread('Invalid thread: ' + thread)
-
-	def load_config(self, file):
-		if not os.path.isfile(file):
-			raise IOError('Invalid config file name')
-			
-		with open(file, 'r', encoding='utf-8') as file:
-			self.config = json.loads(file.read())
-
-	def save_config(self, file):
-		with open(file, 'w+', encoding='utf-8') as file:
-			json.dump(self.config, file, ensure_ascii=False, indent=4)
+		
+		return reply_button.find('a').get('href').split('?tid=')[-1]
 
 	def login(self, username, password, twofac=None):
-		self.logger.debug('Attempting to log in as ' + username)
+		"""
+		Log in using the data provided
+
+		:param username: the user's account name
+		:param password: the user's password
+		:param twofac (optional): current 2FA code for the account
+		
+		:return: bool
+		""" 
 		resp = self._request('GET', 'member.php', params={'action': 'login'})
 		soup = BeautifulSoup(resp.text, 'html.parser')
 
-		self.logger.debug('Sending the login request')
-		data = {
+		resp = self._request('POST', 'member.php', data={
 			'action': 'do_login',
 			'my_post_key': self._get_input(soup, 'my_post_key'),
 			'username': username,
 			'password': password,
 			'2facode': twofac
-		}
-		resp = self._request('POST', 'member.php', data=data)
+		})
+
+		self.logger.info('Logged in')
 		
-		return 'https://ogusers.com/index.php' in resp.url
+		return 'index.php' in resp.url
 
-	def post(self, thread, message):
+	def logout(self):
+		"""
+		Log out of the website
+
+		:return: none
+		"""
+		resp = self._request('GET', 'member.php', params={
+			'action': 'logout'
+		})
+		soup = BeautifulSoup(resp.text)
+
+		self._request('POST', 'member.php', params={
+			'action': 'logout',
+			'logoutkey': resp.text.split('logoutkey=')[-1].split('"')[0]
+		})
+
+		self.logger.info('Logged out')
+
+	def reply(self, thread, message):
+		"""
+		Make a post to a thread
+
+		:param thread: the thread to post to. if it is not valid,
+						try to resolve it using the `resolve_thread`
+						function
+		:param message: the message to post on the thread
+
+		:return: none
+		"""
 		if not thread.isdigit():
-			thread = self._resolve_thread(thread)
+			thread = self.resolve_thread(thread)
 
-		self.logger.debug('Getting info on thread ' + thread)
 		resp = self._request('GET', 'newreply.php', params={'tid': thread})
 		soup = BeautifulSoup(resp.text, 'html.parser')
 
-		self.logger.debug('Posting reply to ' + thread)
-		data = {
+		self._request('POST', 'newreply.php', data={
 			'my_post_key': self._get_input(soup, 'my_post_key'),
 			'subject': self._get_input(soup, 'subject'),
 			'action': 'do_newreply',
@@ -152,11 +296,16 @@ class Bumper:
 			'tid': thread,
 			'message': message,
 			'postoptions[signature]': 1
-		}
-		return self._request('POST', 'newreply.php', data=data)
+		})
+
+		self.logger.info('Made a post on ' + thread)
 
 	def alerts(self):
-		self.logger.debug('Getting alert page')
+		"""
+		Get a list of alerts
+
+		:return: dict
+		"""
 		resp = self._request('GET', 'alerts.php')
 		soup = BeautifulSoup(resp.text, 'html.parser')
 
@@ -174,11 +323,14 @@ class Bumper:
 				'time': info[1]
 			})
 
-		self.logger.debug('Got ' + str(len(alerts)) + ' alerts')
 		return alerts
 
 	def messages(self):
-		self.logger.debug('Getting messages page')
+		"""
+		Get a list of messages
+
+		:return: dict
+		"""
 		resp = self._request('GET', 'private.php')
 		soup = BeautifulSoup(resp.text, 'html.parser')
 
@@ -192,34 +344,44 @@ class Bumper:
 				'id': body.get('href').split('&pmid=')[-1],
 				'user': message.find_all('td', {'class': 'trow2_pm'})[1].get_text(),
 				'title': body.get_text(),
+				'time': message.find('td', {'class': 'time_sent'}).find('span').get_text(),
 				'unread': True if 'new_pm' in body.get('class') else False
 			})
 
-		self.logger.debug('Got ' + str(len(messages)) + ' alerts')
 		return messages
 
-	def loop(self):
+	def run(self):
+		"""
+		Automatically post to the threads specified in the given
+		config at a specific interval
+
+		:return: none
+		"""
+		self.logger.info('Started running the bumper')
+		
 		while 1:
-			for thread in self.config['threads']:
+			for thread in self.__config['threads']:
 				if thread.get('message'):
 					message = thread['message']
-				elif self.config.get('default_message'):
-					message = self.config['default_message']
+				elif self.__config.get('default_message'):
+					message = self.__config['default_message']
 				else:
 					message = 'This thread is being auto bumped'
 
 				self.post(thread['id'], message)
 
-				self.logger.info('Bumped thread ' + thread['id'])
+				self.logger.info('Bumped ' + (thread['name'] if thread.get('name') is not None else thread['id']))
+
 				self.data.totals['posts'] += 1
 				self.data.last_bump = str(datetime.now())
 
-				if thread == self.config['threads'][-1]:
+				if thread == self.__config['threads'][-1]:
 					break
 
-				time.sleep(self.config['post_delay'])
+				time.sleep(self.__config['post_delay'])
 
-			self.logger.info('Finished bumping, waiting ' + str(self.config['bump_delay']) + ' minutes')
 			self.data.totals['bumps'] += 1
 
-			time.sleep(self.config['bump_delay'] * 60)
+			self.logger.info('Bumped all threads successfully')
+			
+			time.sleep(self.__config['bump_delay'] * 60)

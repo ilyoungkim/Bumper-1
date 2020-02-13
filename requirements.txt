@@ -19,7 +19,7 @@ Flask-Session == 0.3.1
 beautifulsoup4 == 4.8.0
 
 # bumper\bumper.py: 6
-cloudscraper == 1.2.20
+cloudscraper == 1.2.21
 
 # bumper\extensions.py: 3
 flask-bcrypt == 0.7.1

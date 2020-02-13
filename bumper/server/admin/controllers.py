@@ -13,7 +13,7 @@ def index(user):
 	data = state.data
 	return render_template(
 		'admin/home.html',
-		user=state.user,
+		user=state.current_user,
 		config=state.config,
 		data=data.as_dict(),
 		elapsed=datetime.now() - data.start

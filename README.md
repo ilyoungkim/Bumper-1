@@ -24,6 +24,8 @@ All config files follow the following format:
    "bump_delay": 60.0,
    "post_delay": 60.0,
    "default_message": "Default bumping message",
+   "host": "0.0.0.0",
+   "port": 80,
    "threads": [
       {
          "name": "Thread name",
@@ -38,6 +40,8 @@ All config files follow the following format:
 | bump_delay | ✓ | The amount of time to wait between bump sessions in minutes |
 | post_delay | ✓ | The amount of time to wait between posts when bumping in seconds |
 | default_message | ✗ | Default message for threads without a custom message, if this is not specified a built in message will be used instead |
+| host | ✗ | IP to run the web server from |
+| port | ✗ | The port to run the server on |
 | threads | ✓ | An array of threads to be bumped |
 
 Within threads, the following format is used.
@@ -49,6 +53,8 @@ Within threads, the following format is used.
 | message | ✗ | Custom message for that specific thread |
 
 For now, before installing, go into `/bumper/config.py` and change the value of `SECRET_KEY` to a random, long password.
+
+A full example of a config is available in the `/examples/` folder.
 
 ### Running
 To sign in with username and password
@@ -73,21 +79,21 @@ Additional options are available below.
 
 All options are available by typing `bumper -h`.
 
-### Website
+## Website
 Using the `--server` parameter when starting the program, a website will be started on `localhost:80` that can be used in order to change the configuration and view statistics as the program is running. There are three different paths of pages that are hosted.
-#### /admin
+### /admin
 Anything to do with the owner/admin of the program.
-##### /
-View the admin panel of the website.
-Methods: GET
+#### /
+View the admin panel of the website.  
+Methods: GET  
 Parameters: None
 
-#### /api
+### /api
 Anything to do with changing configuration for the program from the web. In order to access any parts of this, a valid, logged in session is required.
 All methods will return a `200` status code on success and `400` on failure.
-##### /config
-Change basic configuration for the program.
-Methods: POST
+#### /config
+Change basic configuration for the program.  
+Methods: POST  
 Parameters:
 
 |Name|Type|Required|Description|
@@ -96,9 +102,9 @@ Parameters:
 |post_delay|Float|No|Time to wait between posts|
 |default_message|String|No|Default message for threads|
 
-##### /thread
-Modify threads within the configuration.
-Methods: POST
+#### /thread
+Modify threads within the configuration.  
+Methods: POST  
 Parameters:
 
 |Name|Type|Required|Description|
@@ -108,9 +114,9 @@ Parameters:
 |name|String|No|An alias/note for the thread|
 |message|String|No|The default message for that specific thread|
 
-##### /user
-Change the information of the admin account.
-Methods: POST
+#### /user
+Change the information of the admin account.  
+Methods: POST  
 Parameters:
 
 |Name|Type|Required|Description|
@@ -119,16 +125,16 @@ Parameters:
 |new-password|String|No|New password for the admin account|
 |username|String|No|New username for the account|
 
-##### /last_request
-Shows the latest request made by the program as a web page.
-Methods: GET
+#### /last_request
+Shows the latest request made by the program as a web page.  
+Methods: GET  
 Parameters: None
 
-#### /auth
+### /auth
 Authentication system for the website to prevent just anyone from being able to change the user's configuration.
-##### /login
-Log in to the website
-Methods: GET/POST
+#### /login
+Log in to the website  
+Methods: GET/POST  
 Parameters:
 
 |Name|Type|Required|Description|
@@ -137,14 +143,14 @@ Parameters:
 |password|String|Yes|Password to log in with|
 
 On successful login, user will be redirected to the admin panel (`/admin/`). On failure, they will stay on the page.
-##### /logout
-Log out of the website
-Methods: GET
+#### /logout
+Log out of the website  
+Methods: GET  
 Parameters: None
-If the user is logged in they will be redirected to the login page (`/auth/login`).
-##### /register
-Signs the user up for an administrator account if there is not already one.
-Methods: GET/POST
+After logging out the user will be taken to the login page.
+#### /register
+Signs the user up for an administrator account if there is not already one.  
+Methods: GET/POST  
 Parameters:
 
 |Name|Type|Required|Description|
@@ -160,7 +166,12 @@ On successful signup user will be redirected to the admin panel (`/admin/`).
 - [ ] Include server specific configuration values (eg for the host/port/secret key/database address)
 - [ ] Add proper debug mode
 - [ ] Add 'add' function for threads on admin panel
-- [ ] Add automatic setting of secret key 
+- [ ] Add automatic setting of secret key
+- [ ] Store config within database and make config file optional
+- [ ] Clean up the `__main__.py` file
+- [ ] Add CSRF to the logout endpoint
+- [ ] Add CAPTCHA support
+- [ ] Add more examples
 
 ## License
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](https://github.com/Shoot/Bumper/blob/master/LICENSE) file for details.

@@ -132,3 +132,4 @@ dmypy.json
 config.json
 start.sh
 start.bat
+session.dump

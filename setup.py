@@ -9,8 +9,8 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
 	name='bumper',
-	version='1.0.0',
-	description='Automatic poster for OGUsers forum',
+	version='1.1.0',
+	description='Automatic poster for OGUsers',
 	author='Shoot',
 	long_description=long_description,
 	long_description_content_type='text/markdown',
@@ -19,17 +19,19 @@ setup(
 	include_package_data=True,
 	zip_safe=False,
 	install_requires=[
+		'dill==0.3.1.1',
 		'Flask==1.1.1',
 		'Flask-API==2.0',
 		'Flask-PyMongo==2.3.0',
 		'Flask-Session==0.3.1',
 		'beautifulsoup4==4.8.0',
-		'cloudscraper==1.2.20',
+		'cloudscraper==1.2.21',
 		'flask-bcrypt==0.7.1',
 		'flask-wtf==0.14.2',
 		'requests==2.22.0',
 		'setuptools==40.8.0',
 		'waitress>=1.4.3',
+		'werkzeug==0.16.0',
 		'wtforms==2.2.1'
 	],
 	entry_points={

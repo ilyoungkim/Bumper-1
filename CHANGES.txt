@@ -1,2 +1,15 @@
+V1.1.0
+<overall>
+- Moved server into a separate folder
+<__main__.py>
+- Added way to dump the session for later use
+<bumper.py>
+- Made `post` function into `reply`
+- Updated documentation for each function
+<server/templates/admin/index.html & server/static/js/index.js>
+- Fixed some minor issues with the names on the website
+<README.md>
+Fixed indentation in the website section
+
 V1.0.0
 Initial release
