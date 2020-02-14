@@ -10,7 +10,7 @@ from .config import DevelopmentConfig, ProductionConfig
 from .extensions import session, mongo, bcrypt
 
 def create_app():
-	app = Flask(__name__, static_url_path='/static', template_folder='templates')
+	app = Flask(__name__, static_url_path="/static", template_folder="templates")
 
 	load_configurations(app)
 	initialise_extensions(app)

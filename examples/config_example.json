@@ -15,5 +15,11 @@
         }
     ],
     "host": "127.0.0.1",
-    "port": 80
+    "port": 80,
+    "captcha": {
+        "provider": "CAPTCHA website here",
+        "api_key": "API key if you have one",
+        "username": "Username for CAPTCHA website",
+        "password": "Password for CAPTCHA ebsite"
+    }
 }

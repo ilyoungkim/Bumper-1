@@ -99,9 +99,9 @@ Parameters:
 
 |Name|Type|Required|Description|
 |-|-|-|-|
-|bump_delay|Float|No|Time to wait between bumps|
-|post_delay|Float|No|Time to wait between posts|
-|default_message|String|No|Default message for threads|
+|bump_delay|Float|✗|Time to wait between bumps|
+|post_delay|Float|✗|Time to wait between posts|
+|default_message|String|✗|Default message for threads|
 
 #### /thread
 Modify threads within the configuration.  
@@ -110,10 +110,10 @@ Parameters:
 
 |Name|Type|Required|Description|
 |-|-|-|-|
-|method|String|Yes|What method to do for the thread, `edit`, `create`, or `delete`|
-|thread|String|Yes|The thread user wants to edit|
-|name|String|No|An alias/note for the thread|
-|message|String|No|The default message for that specific thread|
+|method|String|✓|What method to do for the thread, `edit`, `create`, or `delete`|
+|thread|String|✓|The thread user wants to edit|
+|name|String|✗|An alias/note for the thread|
+|message|String|✗|The default message for that specific thread|
 
 #### /user
 Change the information of the admin account.  
@@ -122,9 +122,9 @@ Parameters:
 
 |Name|Type|Required|Description|
 |-|-|-|-|
-|old-password|String|Yes|Current admin account password|
-|new-password|String|No|New password for the admin account|
-|username|String|No|New username for the account|
+|old-password|String|✓|Current admin account password|
+|new-password|String|✗|New password for the admin account|
+|username|String|✗|New username for the account|
 
 #### /last_request
 Shows the latest request made by the program as a web page.  
@@ -140,8 +140,8 @@ Parameters:
 
 |Name|Type|Required|Description|
 |-|-|-|-|
-|username|String|Yes|Username to log in as|
-|password|String|Yes|Password to log in with|
+|username|String|✓|Username to log in as|
+|password|String|✓|Password to log in with|
 
 On successful login, user will be redirected to the admin panel (`/admin/`). On failure, they will stay on the page.
 #### /logout
@@ -156,14 +156,15 @@ Parameters:
 
 |Name|Type|Required|Description|
 |-|-|-|-|
-|username|String|Yes|Username to use|
-|password|String|Yes|Password to use|
+|username|String|✓|Username to use|
+|password|String|✓|Password to use|
 
 On successful signup user will be redirected to the admin panel (`/admin/`).
 
 ## Todo
 - [x] Add functionality to the delete button in the thread section
 - [x] Use XHR for the API requests from the admin panel
+- [x] Add CAPTCHA support (14/02/2020)
 - [ ] Include server specific configuration values (eg for the host/port/secret key/database address)
 - [ ] Add proper debug mode
 - [ ] Add 'add' function for threads on admin panel
@@ -171,7 +172,6 @@ On successful signup user will be redirected to the admin panel (`/admin/`).
 - [ ] Store config within database and make config file optional
 - [ ] Clean up the `__main__.py` file
 - [ ] Add CSRF to the logout endpoint
-- [ ] Add CAPTCHA support
 - [ ] Add more examples
 
 ## License

@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, url_for
 
-home = Blueprint('index', __name__)
+home = Blueprint("index", __name__)
 
-@home.route('/')
+@home.route("/")
 def index():
-	return redirect(url_for('auth.login'))
+	return redirect(url_for("auth.login"))

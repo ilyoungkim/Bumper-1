@@ -1,18 +1,24 @@
 class InvalidUser(Exception):
 	""" The given details are not valid """
-	pass
+	def __init__(self, message, username, password):
+		super().__init__(message)
+		self.username = username
+		self.password = password
 
 class InvalidThread(Exception):
 	""" The given thread is invalid """
-	pass
+	def __init__(self, message, thread):
+		super().__init__(message)
+		self.thread = thread
 
 """ Configuration errors """
 class ConfigError(Exception):
 	""" Base for configuration errors """
-	pass
+	def __init__(self, message):
+		super().__init__(message)
 
-class InvalidJSON(ConfigError):
-	""" Loaded config's JSON is invalid """
+class InvalidConfig(ConfigError):
+	""" Loaded config string is incorrect """
 	pass
 
 class MissingData(ConfigError):
@@ -21,4 +27,6 @@ class MissingData(ConfigError):
 
 class InvalidType(ConfigError):
 	""" Invalid data type of a value """
-	pass
+	def __init__(self, message, item):
+		super().__init__(message)
+		self.item = item
