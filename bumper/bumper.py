@@ -324,7 +324,7 @@ class Bumper:
 
 		:return: none
 		"""
-		self.logger.debug(f"Replying to '{thread}' with '{message[:10]}{'...' if len(message) > 10 else ''}")
+		self.logger.debug(f"Replying to '{thread}' with '{message[:10]}{'...' if len(message) > 10 else ''}'")
 
 		resp = self._request("GET", "newreply.php", params={"tid": thread})
 		soup = BeautifulSoup(resp.text, "html.parser")
